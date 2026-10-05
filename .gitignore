@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Generated paper assets (regenerate with: python experiments/make_paper_assets.py)
+paper/tables/*.tex
+paper/figures/*.pdf
+paper/figures/*.png
+paper/figures_spie/*.png
+
+# Local scratch
+*.bak
+*.tmp

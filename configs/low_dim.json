@@ -1,0 +1,12 @@
+{
+  "name": "low_dim",
+  "description": "低维均衡版 (m<=5): adaptive 保护 + 动态分位数 lag，无 d⊥",
+  "protect_mode": "adaptive",
+  "lag_thresh": 0.3,
+  "lag_quantile": null,
+  "d_perp_tiebreak": false,
+  "stall_patience": 10,
+  "phi_relax": 0.45,
+  "conv_eps": 0.01,
+  "use_lazy_greedy": false
+}

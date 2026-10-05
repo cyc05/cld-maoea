@@ -1,0 +1,12 @@
+{
+  "name": "speed",
+  "description": "速度优先版: champion 保护，固定 lag_thresh=0.3，无 d⊥，惰性贪心",
+  "protect_mode": "champion",
+  "lag_thresh": 0.3,
+  "lag_quantile": null,
+  "d_perp_tiebreak": false,
+  "stall_patience": 8,
+  "phi_relax": 0.45,
+  "conv_eps": 0.01,
+  "use_lazy_greedy": true
+}

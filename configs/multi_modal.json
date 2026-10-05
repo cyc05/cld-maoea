@@ -1,0 +1,45 @@
+{
+  "name": "multi_modal",
+  "description": "多峰专项版: champion 保护 + d⊥ 按类型启用（DTLZ 启用/WFG 禁用）+ 多峰逃逸变异（仅 dtlz3/dtlz1 m=10 + wfg2/wfg3 m=5/wfg7 m=10/wfg9 m=10）",
+  "_notes": {
+    "dtlz7": "教训7：固定 lag_thresh=0.4 对 dtlz7 m=10 有害(2.29→2.85)，降为 0.3；m=5 保持 0.4",
+    "dtlz3": "K.7 验证：escape_eta_m=5 对 m=5(-9.0%)和 m=10(-7.4%)均有效；K.11/K.12：m=5 必须显式 stall_patience=10（浅陷阱早触发）",
+    "dtlz1": "m=10 逃逸有效(-10.8%)保留；m=5 移除全部 override（IGD 已近优 0.08，无需逃逸/停滞检测）",
+    "d_perp_conditional": "教训15：d⊥ 按问题类型启用，WFG 线性/凸 PF 上全局启用导致 wfg1/wfg3m10/wfg5/wfg6/wfg8 m=10 退化，对齐 H 版策略",
+    "wfg_escape_enabled": "wfg2(m=5/10)、wfg3(m=5)、wfg7(m=10)、wfg9(m=10) 确认有效",
+    "wfg_escape_removed": "wfg1(有害)、wfg3 m=10(灾难+126%)、wfg4-6(无效)、wfg7 m=5(无效)、wfg8(有害)、wfg9 m=5(无效)",
+    "override_cascade": "注意：escape_eta_m 只设在 m 级别 overrides 中，裸问题级别不设，防止级联污染",
+    "div_eps_auto": "K.18：div_eps 预热期 p25 自动标定，但预热期分布无法标定停滞阈值（dtlz3 m=5 手调0.01<预热min0.04、wfg9 m=10 手调0.015≈p75）；dtlz3+m=5、wfg9+m>=10 已回退手调 div_eps，其余逃逸题保留 auto 默认",
+    "niche_fill": "K.17/K.19：仅 r2 层空方向强制填充（不改 assoc，与逃逸解耦）。wfg4 m=10 IGD-9%/IGD+-16% 双改善启用；wfg5 m=10 IGD+改善但IGD退化、wfg6 m=10 退化、wfg3 m=5 灾难均不启用",
+    "corner_archive": "K.25 Route 1 落地：P2 方向档案 + replace 恒输出 N（budget 0.1）。10 种子同进程验证通过的 4 例启用——wfg2 m=10（IGD-31.6%）、dtlz5 m=5/10（-22.9%/-41.6%）、dtlz7 m=10（-13.6%）；未通过 3 例（wfg3 m=5 单种子违规、dtlz6 m=10 同向率不足、dtlz7 m=5 无增益）不启用"
+  },
+
+  "protect_mode": "champion",
+  "lag_thresh": 0.4,
+  "lag_quantile": null,
+  "d_perp_tiebreak": {"dtlz": true, "wfg": false, "default": false},
+  "stall_patience": 15,
+  "phi_relax": 0.4,
+  "conv_eps": 0.01,
+  "use_lazy_greedy": false,
+  "div_eps_auto": true,
+  "div_eps_warmup": 0.2,
+  "div_eps_quantile": 0.25,
+
+  "overrides": {
+    "dtlz7+m=10": {"lag_thresh": 0.3, "corner_archive": true, "archive_policy": "direction", "archive_out_mode": "replace", "archive_budget": 0.1},
+    "dtlz5+m=5": {"corner_archive": true, "archive_policy": "direction", "archive_out_mode": "replace", "archive_budget": 0.1},
+    "dtlz5+m>=10": {"corner_archive": true, "archive_policy": "direction", "archive_out_mode": "replace", "archive_budget": 0.1},
+    "dtlz3+m=5": {"conv_eps": 0.05, "escape_eta_m": 5, "stall_patience": 10, "div_eps": 0.01, "div_eps_auto": false},
+    "dtlz3+m>=10": {"conv_eps": 0.05, "escape_eta_m": 5},
+    "dtlz1+m>=10": {"conv_eps": 0.05, "escape_eta_m": 5},
+    "wfg2+m=5": {"conv_eps": 0.05, "escape_eta_m": 5, "stall_patience": 10},
+    "wfg2+m>=10": {"conv_eps": 0.05, "escape_eta_m": 5, "corner_archive": true, "archive_policy": "direction", "archive_out_mode": "replace", "archive_budget": 0.1},
+    "wfg3+m=5": {"conv_eps": 0.05, "escape_eta_m": 5},
+    "wfg7+m>=10": {"conv_eps": 0.05, "escape_eta_m": 5},
+    "wfg9+m>=10": {"conv_eps": 0.05, "escape_eta_m": 5, "div_eps": 0.015, "div_eps_auto": false},
+    "wfg1+m=5": {"stall_patience": 10, "phi_relax": 0.45},
+    "wfg8+m>=10": {"stall_patience": 10, "phi_relax": 0.45},
+    "wfg4+m>=10": {"niche_fill": true}
+  }
+}

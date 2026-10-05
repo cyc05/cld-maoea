@@ -1,0 +1,24 @@
+{
+  "name": "high_dim",
+  "description": "高维稳定版 (m>=8): M4 champion 保护，DTLZ d⊥，WFG 无 d⊥。lag 阈值按 m/问题精细调节。",
+  "_notes": {
+    "dtlz7": "教训7：dtlz7 m>=10 需要较少 champion 保护（0.2 过多、0.4 有害），S 版 0.3 最优→ overrides 升为 0.3",
+    "dtlz3": "教训4：champion+低阈值对高维多峰题（dtlz3 m=10）验证有效，保持 0.2",
+    "wfg3": "教训8 + P2验证：m=10 champion 最优(0.15 vs 0.20)，但 m=5 adaptive 更优(1.44 vs 1.74)→ overrides 对 m=5 切换"
+  },
+
+  "protect_mode": "champion",
+  "lag_thresh": {"default": 0.3, "m>=10": 0.2},
+  "lag_quantile": null,
+  "d_perp_tiebreak": {"dtlz": true, "wfg": false, "default": false},
+  "stall_patience": 10,
+  "phi_relax": 0.45,
+  "conv_eps": 0.01,
+  "use_lazy_greedy": false,
+
+  "overrides": {
+    "dtlz7+m>=10": {"lag_thresh": 0.3},
+    "wfg3+m=5": {"protect_mode": "adaptive"},
+    "dtlz3": {"conv_eps": 0.05}
+  }
+}
