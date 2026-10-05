@@ -454,7 +454,7 @@ def main():
     s11 = make_t11()
     make_figs()
     print("== 校验 ==")
-    print("T6 主表胜负 (期望 NSGA3 9/13/10, MOEAD 21/5/6, RVEA 11/11/10, CTAEA 15/8/9):")
+    print("T6 主表胜负 (期望 NSGA3 9/13/10, MOEAD 20/6/6, RVEA 10/14/8, CTAEA 15/8/9):")
     for b in BASES:
         print("  vs %-6s %d/%d/%d" % (b, *wt[b]))
     print("T8 泛化胜负 (期望 NSGA3 3/8/7, MOEAD 12/6/0, RVEA 8/6/4, CTAEA 3/8/7):")

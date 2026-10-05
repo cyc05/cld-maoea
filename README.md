@@ -13,13 +13,15 @@ and table-generation scripts will be released upon acceptance."* Concretely:
 | Promised artifact | Location in this repository |
 |---|---|
 | **Code** — the CLD-MaOEA algorithm and every experiment driver | `src/`, `experiments/*.py` |
-| **Seeds** — the complete four-batch seed protocol | documented in [Seed protocol](#seed-protocol); hard-coded as `SEEDS` in each driver |
-| **Table-generation scripts** — CSV → LaTeX table / figure, no manual steps | `experiments/make_paper_assets.py`, `experiments/gen_t20.py`–`gen_t23.py` |
+| **Seeds** — the complete four-batch seed protocol | documented in [Seed protocol](#seed-protocol); declared as a module-level constant in each driver |
+| **Table-generation scripts** — CSV → LaTeX table / figure | `experiments/make_paper_assets.py`, `experiments/gen_t20.py`–`gen_t23.py` |
 | **Raw results** — the CSVs those scripts consume | `experiments/results/` |
 
-Raw results are included on purpose: they let every table and figure in the paper be
-regenerated in seconds rather than re-running the full benchmark (~100 CPU-hours), while the
-drivers remain available for anyone who wants to reproduce the numbers from scratch.
+Raw results are included on purpose: twelve of the manuscript's tables then regenerate in
+seconds instead of re-running the full benchmark (~100 CPU-hours), while the drivers remain
+available for anyone who wants to reproduce the numbers from scratch. The remaining tables
+are typeset from the output of the analysis scripts — see
+[Table-generation coverage](#table-generation-coverage).
 
 ## Algorithm
 
@@ -40,8 +42,10 @@ selection pressure collapses as the objective count grows. It couples four mecha
 
 ## Requirements
 
-- Python 3.14 (verified on 3.14.5)
-- Intel Core Ultra 9 275HX or equivalent; all algorithms run **single-threaded**
+- Python 3.14 (the paper reports Python 3.14; the reproduction commands below were last
+  exercised on 3.14.7)
+- Timings in the paper were measured on an Intel Core Ultra 9 275HX; all algorithms run
+  **single-threaded**, so core count does not affect the comparison
 
 ```bash
 pip install -r requirements.txt
@@ -63,7 +67,8 @@ cld-maoea/
 │   └── results/      # raw CSV results (the inputs to the table-generation scripts)
 └── paper/            # output targets, created empty
     ├── tables/       # LaTeX tables written by make_paper_assets.py / gen_t2*.py
-    └── figures/      # convergence and phi-rho figures
+    ├── figures/      # convergence and phi-rho figures
+    └── figures_spie/ # framework and criterion-chain diagrams (draw_fig1.py, draw_fig3.py)
 ```
 
 Every driver resolves the project root from its own location, so the repository can be cloned
@@ -77,7 +82,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 The seed sets are disjoint by construction — this is what makes the criterion chain's
 reproduction claim meaningful rather than circular. Each driver declares its set as a
-module-level `SEEDS` constant.
+module-level constant; the name differs per driver (`SEEDS`, `SEEDS10`, `SEEDS_10`,
+`SEEDS_ALL`, `SEEDS_S1`/`SEEDS_S2`, `TUNE_SEEDS`), so take the set from the table below
+rather than assuming the name.
 
 | Batch | Seeds | Purpose | Declared in |
 |---|---|---|---|
@@ -88,8 +95,11 @@ module-level `SEEDS` constant.
 | **Small diagnostic / ablation** | `42, 7, 2024` | mechanism-wise probes | `phi_rho_trace.py`, `escape_ablate.py`, `k18_*.py`, … |
 | **M2 ablation** | `42, 7, 2024, 314, 99` | five-seed ablation | `m2_ablation.py` |
 
-S1 must not be a subset of S2 — `gap_profiler.py` asserts this. Stage A of the generalization
-benchmark screens with the first 3 of the S2 set and Stage B runs all 10 after the gate passes.
+S1 must not be a subset of S2; `gap_profiler.py` records that invariant in a comment beside
+its `SEEDS` declaration, but nothing enforces it — if you change either set, check the
+disjointness yourself. Stage A of the generalization benchmark screens with the first 3 of the
+S2 set (`--seeds 3`); Stage B runs all 10 (`--seeds 10`). The gate between them is an analyst
+decision, not an automatic check.
 
 ## Reproduction
 
@@ -145,7 +155,7 @@ from the shipped CSVs:
 
 | Tables | Written by |
 |---|---|
-| T4–T11 | `experiments/make_paper_assets.py` (self-asserting: it re-checks the win/tie/loss counts and the 32/32 chain agreement as it writes) |
+| T4–T11 | `experiments/make_paper_assets.py` — prints the win/tie/loss counts and the 32/32 chain agreement alongside their expected values so you can compare by eye; it reports, it does not fail |
 | T20–T23 | `experiments/gen_t20.py` … `gen_t23.py` |
 
 The remaining tables were typeset by hand from the console output of the analysis scripts.
